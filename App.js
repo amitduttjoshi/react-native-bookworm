@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   Button,
+  FlatList,
 } from 'react-native';
 import {Feather} from '@expo/vector-icons';
 import FooterButton from './src/components/FooterButton';
@@ -15,9 +16,9 @@ class App extends Component {
   constructor (props) {
     super (props);
     this.state = {
-      totalCount: 30,
-      totalReading: 20,
-      totalRead: 10,
+      totalCount: 0,
+      totalReading: 0,
+      totalRead: 0,
       isAddNewBookVisible: false,
       newBookName: '',
       books: [],
@@ -27,6 +28,7 @@ class App extends Component {
     this.setState ({
       isAddNewBookVisible: true,
     });
+    console.log (this.state);
   };
   hideAddNewBook = () => {
     this.setState ({
@@ -44,16 +46,13 @@ class App extends Component {
           bookName: this.state.newBookName,
         },
       ],
+      totalCount: this.state.totalCount + 1,
+      totalReading: this.state.totalReading + 1,
     });
     this.setState ({newBookName: ''});
     this.hideAddNewBook ();
     console.log (this.state.books);
   };
-
-  componentDidUpdate () {
-    console.log (this.state.newBookName);
-    console.log (this.state.books);
-  }
 
   render () {
     return (
@@ -92,6 +91,13 @@ class App extends Component {
             </TouchableOpacity>
           </View>}
         <View style={styles.appBody}>
+          <FlatList
+            data={this.state.books}
+            keyExtractor={book => `key${book.id}`}
+            renderItem={({item}) => {
+              return <Text>{item.bookName}</Text>;
+            }}
+          />
           <TouchableOpacity
             style={styles.touchBtnToAdd}
             onPress={this.showAddNewBook}
