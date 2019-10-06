@@ -17,6 +17,7 @@ import AppFooter from './src/components/AppFooter';
 import AppHeader from './src/components/AppHeader';
 import FooterButton from './src/components/FooterButton';
 import SearchBar from './src/components/SearchBar';
+import CustomActionButton from './src/components/CustomActionButton';
 
 class App extends Component {
   constructor (props) {
@@ -50,7 +51,6 @@ class App extends Component {
       totalReading: prevState.totalReading - 1,
       totalRead: prevState.totalRead + 1,
     }));
-    console.log (this.state);
   };
 
   saveNewBook = () => {
@@ -76,17 +76,15 @@ class App extends Component {
       <View style={styles.bookRowHeading}>
         <Text>{item.bookName}</Text>
       </View>
-      <TouchableOpacity onPress={() => this.markAsRead (item)}>
-        <View style={styles.bookMarkAsReadBtn}>
-          <Text>Mark as Read</Text>
-        </View>
-      </TouchableOpacity>
+      <CustomActionButton
+        onPressAction={() => this.markAsRead (item)}
+        styles={styles.bookMarkAsReadBtn}
+      />
     </View>
   );
 
   setNewBookName = bookName => {
     this.setState ({newBookName: bookName});
-    console.log (bookName);
   };
 
   render () {
