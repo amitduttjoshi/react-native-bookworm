@@ -1,22 +1,16 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
-class FooterButton extends Component {
-  constructor (props) {
-    super (props);
-  }
-
-  render () {
-    return (
-      <View style={styles.footerBtn}>
-        <Text style={styles.btnFooterHeading}>{this.props.title}</Text>
-        <Text style={styles.btnFooterSubHeading}>
-          {this.props.cntVal}
-        </Text>
-      </View>
-    );
-  }
-}
+const FooterButton = ({title, cntVal}) => {
+  return (
+    <View style={styles.footerBtn}>
+      <Text style={styles.btnFooterHeading}>{title}</Text>
+      <Text style={styles.btnFooterSubHeading}>
+        {cntVal}
+      </Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create ({
   footerBtn: {

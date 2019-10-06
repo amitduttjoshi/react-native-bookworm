@@ -8,9 +8,15 @@ import {
   TextInput,
   Button,
   FlatList,
+  Image,
 } from 'react-native';
-import {Feather} from '@expo/vector-icons';
+
+// import custom components
+import AddNewBook from './src/components/AddNewBook';
+import AppFooter from './src/components/AppFooter';
+import AppHeader from './src/components/AppHeader';
 import FooterButton from './src/components/FooterButton';
+import SearchBar from './src/components/SearchBar';
 
 class App extends Component {
   constructor (props) {
@@ -22,18 +28,29 @@ class App extends Component {
       isAddNewBookVisible: false,
       newBookName: '',
       books: [],
+      firstTime: 0,
     };
   }
   showAddNewBook = () => {
     this.setState ({
       isAddNewBookVisible: true,
     });
-    console.log (this.state);
   };
+
   hideAddNewBook = () => {
     this.setState ({
       isAddNewBookVisible: false,
     });
+  };
+
+  markAsRead = item => {
+    let newList = this.state.books.filter (book => book.id !== item.id);
+    this.setState (prevState => ({
+      books: newList,
+      totalReading: prevState.totalReading - 1,
+      totalRead: prevState.totalRead + 1,
+    }));
+    console.log (this.state);
   };
 
   saveNewBook = () => {
@@ -51,67 +68,57 @@ class App extends Component {
     });
     this.setState ({newBookName: ''});
     this.hideAddNewBook ();
-    console.log (this.state.books);
+  };
+
+  renderItem = item => (
+    <View style={styles.bookRow}>
+      <Image source={{uri: item.image}} style={styles.bookRowImage} />
+      <View style={styles.bookRowHeading}>
+        <Text>{item.bookName}</Text>
+      </View>
+      <TouchableOpacity onPress={() => this.markAsRead (item)}>
+        <View style={styles.bookMarkAsReadBtn}>
+          <Text>Mark as Read</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+
+  setNewBookName = bookName => {
+    this.setState ({newBookName: bookName});
+    console.log (bookName);
   };
 
   render () {
     return (
       <View style={styles.container}>
         <SafeAreaView style={styles.headerBackground} />
-        <View style={[styles.headerFooterStyle, styles.appHeader]}>
-          <Text style={styles.headerHeading}>Book Worm Application</Text>
-        </View>
-        {this.state.isAddNewBookVisible &&
-          <View style={styles.searchBarPanel}>
-            <TextInput
-              style={styles.textBox}
-              autoCapitalize="none"
-              placeholder="Enter Search Term"
-              placeholderTextColor="#454545"
-              onChangeText={text => {
-                this.setState ({newBookName: text});
-              }}
-            />
-            <TouchableOpacity
-              style={styles.touchableSearch}
-              onPress={this.saveNewBook}
-              disabled={this.state.newBookName.length <= 0 ? true : false}
-            >
-              <View style={styles.searchButton}>
-                <Feather name="check" style={styles.searchIcon} size={25} />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.touchableSearch}
-              onPress={this.hideAddNewBook}
-            >
-              <View style={styles.cancelButton}>
-                <Feather name="delete" style={styles.cancelIcon} size={25} />
-              </View>
-            </TouchableOpacity>
-          </View>}
+        <AppHeader />
+        <SearchBar
+          bookName={this.state.newBookName}
+          onChange={text => this.setNewBookName (text)}
+          hideAddForm={this.hideAddNewBook}
+          isVisible={this.state.isAddNewBookVisible}
+          onSave={this.saveNewBook}
+        />
         <View style={styles.appBody}>
           <FlatList
             data={this.state.books}
             keyExtractor={book => `key${book.id}`}
-            renderItem={({item}) => {
-              return <Text>{item.bookName}</Text>;
-            }}
+            renderItem={({item}) => this.renderItem (item)}
+            ListEmptyComponent={
+              <View style={styles.noBooksAtm}>
+                <Text>Not reading any books at the moment</Text>
+              </View>
+            }
           />
-          <TouchableOpacity
-            style={styles.touchBtnToAdd}
-            onPress={this.showAddNewBook}
-          >
-            <View style={styles.roundBtn}>
-              <Feather style={styles.btnColor} name="plus" size={24} />
-            </View>
-          </TouchableOpacity>
+          <AddNewBook showAddBook={this.showAddNewBook} />
         </View>
-        <View style={[styles.headerFooterStyle, styles.appFooter]}>
-          <FooterButton title="Total" cntVal={this.state.totalCount} />
-          <FooterButton title="Reading" cntVal={this.state.totalReading} />
-          <FooterButton title="Read" cntVal={this.state.totalRead} />
-        </View>
+        <AppFooter
+          total={this.state.totalCount}
+          reading={this.state.totalReading}
+          read={this.state.totalRead}
+        />
         <SafeAreaView style={styles.footerBackground} />
       </View>
     );
@@ -128,77 +135,42 @@ const styles = StyleSheet.create ({
   footerBackground: {
     backgroundColor: '#a9a9a9',
   },
-  appHeader: {
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#d9d9d9',
-    backgroundColor: '#cccccc',
-  },
   appBody: {
     flex: 1,
     backgroundColor: '#f9f9f9',
   },
-  appFooter: {
-    borderTopWidth: 0.5,
-    borderTopColor: '#d9d9d9',
-    backgroundColor: '#bbbbbb',
-    flexDirection: 'row',
-  },
-  headerFooterStyle: {
-    height: 70,
-    justifyContent: 'center',
+  noBooksAtm: {
     alignItems: 'center',
+    height: 50,
+    marginHorizontal: 10,
+    marginVertical: 15,
   },
-  headerHeading: {
-    fontSize: 25,
-    alignSelf: 'center',
+  bookRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 50,
+    borderBottomColor: '#CCCCCC',
+    borderBottomWidth: 0.5,
+    backgroundColor: '#EEEEEE',
   },
-  roundBtnWrapper: {},
-  roundBtn: {
+  bookRowImage: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#123456',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  btnColor: {
-    color: '#D2EEFC',
-  },
-  touchBtnToAdd: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-  },
-  searchBarPanel: {
+  bookRowHeading: {
     height: 50,
-    flexDirection: 'row',
-  },
-  textBox: {
-    backgroundColor: '#dcdcdc',
-    color: '#121212',
     flex: 1,
-    padding: 5,
+    marginLeft: 5,
+    justifyContent: 'center',
   },
-  touchableSearch: {},
-  searchButton: {
-    width: 50,
-    backgroundColor: '#00CC00',
+  bookMarkAsReadBtn: {
+    width: 100,
+    height: 50,
+    backgroundColor: '#ae12dc',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 50,
-  },
-  cancelButton: {
-    width: 50,
-    backgroundColor: '#FF0000',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 50,
-  },
-  searchIcon: {
-    color: '#FFFFFF',
-  },
-  cancelIcon: {
-    color: '#FFFFFF',
   },
 });
 
