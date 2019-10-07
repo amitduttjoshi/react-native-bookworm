@@ -9,6 +9,8 @@ import HomeScreen from './src/screens/HomeScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import WelcomeScreen from './src/screens/AppSwitchNavigator/WelcomeScreen';
+import LoadingScreen from './src/screens/LoadingScreen';
+
 import * as firebase from 'firebase/app';
 import {firebaseConfig} from './config/config';
 
@@ -55,6 +57,7 @@ const LoginStackNavigator = createStackNavigator(
 );
 
 const AppSwitchNavigator = createSwitchNavigator({
+  LoadingScreen,
   LoginStackNavigator,
   AppDrawerNavigator,
 });
