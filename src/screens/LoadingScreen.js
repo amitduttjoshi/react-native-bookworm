@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ActivityIndicator} from 'react-native';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 
@@ -29,8 +29,8 @@ class LoadingScreen extends Component {
 
   render() {
     return (
-      <View>
-        <Text> LoadingScreen </Text>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color="#90aa11" />
       </View>
     );
   }

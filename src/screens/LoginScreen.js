@@ -32,7 +32,7 @@ class LoginScreen extends Component {
           .signInWithEmailAndPassword(this.state.email, this.state.password);
         if (response) {
           this.setState({isLoading: false});
-          this.onSignIn(this.state.email, this.state.password);
+          this.props.navigation.navigate('HomeScreen');
         }
       } catch (err) {
         switch (err.code) {
@@ -69,6 +69,7 @@ class LoginScreen extends Component {
             this.state.password
           );
         this.setState({isLoading: false});
+        this.onSignIn(this.state.email, this.state.password);
       } catch (err) {
         if (err.code == 'auth/email-already-in-use') {
           alert('Email already in use, Please try logging in.');
