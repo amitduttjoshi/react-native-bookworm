@@ -5,12 +5,12 @@ import {Feather} from '@expo/vector-icons';
 import CustomActionButton from '../../components/CustomActionButton';
 
 class WelcomeScreen extends Component {
-  constructor (props) {
-    super (props);
+  constructor(props) {
+    super(props);
     this.state = {};
   }
 
-  render () {
+  render() {
     return (
       <View style={styles.mainWrapper}>
         <View style={styles.loginView}>
@@ -21,16 +21,9 @@ class WelcomeScreen extends Component {
           <CustomActionButton
             label="Sign in"
             onPressAction={() => {
-              this.props.navigation.navigate ('HomeScreen');
+              this.props.navigation.navigate('LoginScreen');
             }}
             styles={styles.loginButton}
-          />
-          <CustomActionButton
-            label="Sign up"
-            onPressAction={() => {
-              this.props.navigation.navigate ('SignupScreen');
-            }}
-            styles={styles.signupButton}
           />
         </View>
       </View>
@@ -38,7 +31,7 @@ class WelcomeScreen extends Component {
   }
 }
 
-const styles = StyleSheet.create ({
+const styles = StyleSheet.create({
   flexFull: {
     flex: 1,
   },
@@ -84,6 +77,8 @@ const styles = StyleSheet.create ({
     width: 200,
     height: 50,
     margin: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

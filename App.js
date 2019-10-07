@@ -7,10 +7,12 @@ import {Feather} from '@expo/vector-icons';
 
 import HomeScreen from './src/screens/HomeScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
-import SignupScreen from './src/screens/SignupScreen';
+import LoginScreen from './src/screens/LoginScreen';
 import WelcomeScreen from './src/screens/AppSwitchNavigator/WelcomeScreen';
+import * as firebase from 'firebase/app';
+import {firebaseConfig} from './config/config';
 
-const AppDrawerNavigator = createDrawerNavigator ({
+const AppDrawerNavigator = createDrawerNavigator({
   HomeScreen: {
     screen: HomeScreen,
     navigationOptions: {
@@ -27,23 +29,51 @@ const AppDrawerNavigator = createDrawerNavigator ({
   },
 });
 
-const LoginStackNavigator = createStackNavigator ({
-  WelcomeScreen: {
-    screen: WelcomeScreen,
-    navigationOptions: {
-      header: null,
+const LoginStackNavigator = createStackNavigator(
+  {
+    WelcomeScreen: {
+      screen: WelcomeScreen,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    LoginScreen: {
+      screen: LoginScreen,
+      navigationOptions: {
+        title: 'Login',
+      },
     },
   },
-  SignupScreen,
-});
+  {
+    mode: 'modal',
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgrounColor: '#000000',
+      },
+    },
+  }
+);
 
-const AppSwitchNavigator = createSwitchNavigator ({
+const AppSwitchNavigator = createSwitchNavigator({
   LoginStackNavigator,
   AppDrawerNavigator,
 });
 
-const AppContainer = createAppContainer (AppSwitchNavigator);
+const AppContainer = createAppContainer(AppSwitchNavigator);
 
-const App = () => <AppContainer />;
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.initializeFirebase();
+  }
+
+  initializeFirebase = () => {
+    firebase.initializeApp(firebaseConfig);
+  };
+
+  render() {
+    return <AppContainer />;
+  }
+}
 
 export default App;
